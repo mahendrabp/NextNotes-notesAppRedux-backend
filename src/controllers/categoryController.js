@@ -15,7 +15,7 @@ exports.getCategory = (req, res) => {
   let start = end - (limit || 5);
 
   let sql = '';
-  const table = 'category_note';
+  const table = 'category';
 
   sql = select
     ? sql.concat(`SELECT ${select} FROM ${table} `)
@@ -63,7 +63,7 @@ exports.insertCategory = (req, res) => {
     });
   } else {
     conn.query(
-      `INSERT INTO category_note set name=?, pict=?`,
+      `INSERT INTO category set name=?, pict=?`,
       [name, pict],
       (err, rows, field) => {
         if (err) {
@@ -75,7 +75,7 @@ exports.insertCategory = (req, res) => {
           });
           throw err;
         } else {
-          let sql = `SELECT * FROM category_note ORDER BY category_note.id DESC LIMIT 1`;
+          let sql = `SELECT * FROM category ORDER BY category.id DESC LIMIT 1`;
           conn.query(sql, (err, rows, field) => {
             if (err) {
               res.status(400).json({
@@ -116,13 +116,13 @@ exports.updateCategory = (req, res) => {
       message: 'gambar tidak boleh kosong'
     });
   } else {
-    let sql = `UPDATE category_note SET name=?, pict=? WHERE id=?`;
+    let sql = `UPDATE category SET name=?, pict=? WHERE id=?`;
     conn.query(sql, [name, pict, id], (err, rows, field) => {
       if (err) {
         console.log(err);
       } else {
         conn.query(
-          'SELECT * FROM category_note WHERE id =?',
+          'SELECT * FROM category WHERE id =?',
           [id],
           (err, rows, field) => {
             console.log(rows);
@@ -144,7 +144,7 @@ exports.updateCategory = (req, res) => {
 };
 exports.deleteCategory = (req, res) => {
   conn.query(
-    `delete from category_note where id =?`,
+    `delete from category where id =?`,
     [req.params.id],
     (err, rows, field) => {
       if (err) {
