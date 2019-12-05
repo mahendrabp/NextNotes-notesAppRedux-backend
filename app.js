@@ -29,7 +29,7 @@ app.use(passport.session());
 // app.use(logger); // use logger
 
 //root route yanng atas
-// app.use('/', routerNav);
+app.use('/', routerNav);
 
 //listen port
 app.listen(port, () => {
