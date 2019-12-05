@@ -1,0 +1,50 @@
+Arguments: 
+  /usr/local/Cellar/node/12.12.0/bin/node /usr/local/Cellar/yarn/1.19.1/libexec/bin/yarn.js install
+
+PATH: 
+  /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+
+Yarn version: 
+  1.19.1
+
+Node version: 
+  12.12.0
+
+Platform: 
+  darwin x64
+
+Trace: 
+  SyntaxError: /Applications/XAMPP/xamppfiles/htdocs/Arkademy/week7/NextNotes-notesAppRedux-backend/package.json: Unexpected string in JSON at position 273
+      at JSON.parse (<anonymous>)
+      at /usr/local/Cellar/yarn/1.19.1/libexec/lib/cli.js:1625:59
+      at Generator.next (<anonymous>)
+      at step (/usr/local/Cellar/yarn/1.19.1/libexec/lib/cli.js:304:30)
+      at /usr/local/Cellar/yarn/1.19.1/libexec/lib/cli.js:315:13
+
+npm manifest: 
+  {
+    "name": "NextNotes-notesAppRedux-backend",
+    "version": "1.0.0",
+    "description": "notes app",
+    "main": "app.js",
+    "repository": "https://github.com/mahendrabp/NextNotes-notesAppRedux-backend.git",
+    "author": "mahendrabp <chipxitro@gmail.com>",
+    "license": "MIT"
+    "dependencies": {
+      "body-parse": "^0.1.0",
+      "cors": "^2.8.5",
+      "dateformat": "^3.0.3",
+      "express": "^4.17.1",
+      "mysql": "^2.17.1",
+    "dotenv": "^8.0.0"
+    },
+    "devDependencies": {
+      "dotenv": "^8.0.0"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
