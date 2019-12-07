@@ -15,55 +15,138 @@ exports.getNote = function(req, res) {
   let offset = (params.page - 1) * params.limit;
 
   conn.query(
-    `select count(*) 'total' from notes inner join category  on category.id = notes.id_category where title like '%${params.search}%' ${conState} category.name='${params.category}'  `,
+    `select count(*) 'total' from notes inner join category  on category.id = notes.id_category where title like '%${params.search}%'   `,
     function(error, rows, field) {
       totalData = rows[0].total;
       totalPage = Math.ceil(Number(totalData) / params.limit);
     }
   );
-
-  // let sql = `select title,note,category.name 'category', updated_at,category.id as 'idCategory',notes.id as 'noteId' from notes inner join category  on category.id = notes.id_category where title like '%${params.search}%'  ${conState} category.name='${params.category}' order by updated_at ${params.sort} limit ${params.limit} offset ${offset} ;`;
-  let sql = `select title,note,category.name as'category', updated_at,category.id as 'idCategory',notes.id as 'noteId' from notes inner join category  on category.id = notes.id_category where title like '%${params.search}%' ${conState} category.name='${params.category}' order by updated_at ${params.sort} limit ${params.limit} offset ${offset} ;`;
-  conn.query(sql, function(error, rows, field) {
-    if (error) {
-      throw error;
-    } else {
-      if (rows.length == 0) {
-        console.log(rows.length);
-        res.status(400).json({
-          status: 400,
-          error: false,
-          message: 'gagal',
-          data: {
-            data: rows,
-            totalData: totalData,
-            page: params.page,
-            totalPage: totalPage,
-            limit: params.limit,
-            search: params.search,
-            selectedCategory: params.category
-          }
-        });
+  // backup = ${conState} category.name='${params.category}' order by updated_at ${params.sort} limit ${params.limit} offset ${offset}
+  conn.query(
+    `select title,note,category.name as category, DATE_FORMAT(updated_at, '%d/%m/%Y %h:%i:%s') as 'datetime',category.id as 'idCategory',notes.id as 'noteId' from notes inner join category  on category.id = notes.id_category where title like '%${params.search}%' ${conState} category.name='${params.category} order by updated_at ${params.sort} limit ${params.limit} offset ${offset}';`,
+    function(error, rows, field) {
+      if (error) {
+        throw error;
       } else {
-        console.log(rows);
-        res.status(200).json({
-          status: 200,
-          error: false,
-          message: 'berhasil',
-          data: {
-            data: rows,
-            totalData: totalData,
-            page: params.page,
-            totalPage: totalPage,
-            limit: params.limit,
-            search: params.search,
-            selectedCategory: params.category
-          }
-        });
+        console.log(rows.length);
+        if (rows.length == 0) {
+          res.status(400).json({
+            status: 400,
+            error: false,
+            message: 'gagal',
+            data: {
+              data: rows,
+              totalData: totalData,
+              page: params.page,
+              totalPage: totalPage,
+              limit: params.limit,
+              search: params.search,
+              selectedCategory: params.category
+            }
+          });
+          // response.pagination(
+          //   totalData,
+          //   params.page,
+          //   totalPage,
+          //   params.limit,
+          //   rows,
+          //   res,
+          //   params.search,
+          //   params.category,
+          // );
+        } else {
+          res.status(200).json({
+            status: 200,
+            error: false,
+            message: 'berhasil',
+            data: {
+              data: rows,
+              totalData: totalData,
+              page: params.page,
+              totalPage: totalPage,
+              limit: params.limit,
+              search: params.search,
+              selectedCategory: params.category
+            }
+          });
+          // response.pagination(
+          //   totalData,
+          //   params.page,
+          //   totalPage,
+          //   params.limit,
+          //   rows,
+          //   res,
+          //   params.search,
+          //   params.category
+          // );
+        }
       }
     }
-  });
+  );
 };
+// exports.getNote = function(req, res) {
+//   let params = {
+//     page: parseInt(req.query.page) || 1,
+//     search: req.query.search || '',
+//     sort: req.query.sort || 'DESC',
+//     limit: parseInt(req.query.limit) || 10,
+//     category: req.query.category || ''
+//   };
+//   let conState = params.category == '' ? 'OR' : 'AND';
+//   let totalData;
+//   let totalPage;
+//   let offset = (params.page - 1) * params.limit;
+
+//   conn.query(
+//     `select count(*) 'total' from notes inner join category  on category.id = notes.id_category where title like '%${params.search}%' ${conState} category.name='${params.category}'  `,
+//     function(error, rows, field) {
+//       totalData = rows[0].total;
+//       totalPage = Math.ceil(Number(totalData) / params.limit);
+//     }
+//   );
+
+//   // let sql = `select title,note,category.name 'category', updated_at,category.id as 'idCategory',notes.id as 'noteId' from notes inner join category  on category.id = notes.id_category where title like '%${params.search}%'  ${conState} category.name='${params.category}' order by updated_at ${params.sort} limit ${params.limit} offset ${offset} ;`;
+//   let sql = `select title,note,category.name as'category', updated_at,category.id as 'idCategory',notes.id as 'noteId' from notes inner join category  on category.id = notes.id_category where title like '%${params.search}%' ${conState} category.name='${params.category}' order by updated_at ${params.sort} limit ${params.limit} offset ${offset} ;`;
+//   conn.query(sql, function(error, rows, field) {
+//     if (error) {
+//       throw error;
+//     } else {
+//       if (rows.length == 0) {
+//         console.log(rows.length);
+//         res.status(400).json({
+//           status: 400,
+//           error: false,
+//           message: 'gagal',
+//           data: {
+//             data: rows,
+//             totalData: totalData,
+//             page: params.page,
+//             totalPage: totalPage,
+//             limit: params.limit,
+//             search: params.search,
+//             selectedCategory: params.category
+//           }
+//         });
+//       } else {
+//         console.log(rows);
+//         res.status(200).json({
+//           status: 200,
+//           error: false,
+//           message: 'berhasil',
+//           data: {
+//             data: rows,
+//             totalData: totalData,
+//             page: params.page,
+//             totalPage: totalPage,
+//             limit: params.limit,
+//             search: params.search,
+//             selectedCategory: params.category
+//           }
+//         });
+//       }
+//     }
+//   });
+// };
 exports.getNoteById = (req, res) => {};
 exports.insertNote = (req, res) => {
   let { title, note, id_category } = req.body;
@@ -91,15 +174,31 @@ exports.insertNote = (req, res) => {
       [title, note, id_category, created_at, updated_at],
       (err, rows, field) => {
         if (err) {
-          console.log(err);
+          throw err;
         } else {
-          console.log(rows);
-          res.status(200).json({
-            status: 200,
-            error: false,
-            message: 'berhasil menambah catatan',
-            data: rows
-          });
+          // console.log(rows);
+          // conn.query(`select title,note,category.name 'category', DATE_FORMAT(time, '%d/%m/%Y %h:%i:%s') as 'datetime',category.id as 'idCategory',notes.id as 'noteId' from notes inner join category  on category.id = notes.category order by time DESC limit 1`
+          // res.status(200).json({
+          //   status: 200,
+          //   error: false,
+          //   message: 'berhasil menambah catatan',
+          //   data: rows
+          // });
+          conn.query(
+            `select title,note,category.name 'category', DATE_FORMAT(updated_at, '%d/%m/%Y %h:%i:%s') as 'datetime',category.id as 'idCategory',notes.id as 'noteId' from notes inner join category  on category.id = notes.id_category order by updated_at DESC limit 1`,
+            function(error, rows, field) {
+              if (error) {
+                console.log(error);
+              } else {
+                res.status(200).json({
+                  status: 200,
+                  error: false,
+                  message: 'berhasil menambah catatan',
+                  data: rows
+                });
+              }
+            }
+          );
         }
       }
     );
@@ -127,12 +226,27 @@ exports.updateNote = (req, res) => {
         if (err) {
           console.log(err);
         } else {
-          res.status(200).json({
-            status: 200,
-            error: false,
-            message: 'berhasil menambah catatan',
-            data: rows
-          });
+          conn.query(
+            `select title,note,category.name 'category', DATE_FORMAT(updated_at, '%d/%m/%Y %h:%i:%s') as 'datetime',category.id as 'idCategory',notes.id as 'noteId' from notes inner join category  on category.id = notes.id_category WHERE notes.id=${id} order by updated_at DESC limit 1`,
+            function(err, rows, field) {
+              if (err) {
+                console.log(err);
+              } else {
+                res.status(200).json({
+                  status: 200,
+                  error: false,
+                  message: 'berhasil edit catatan',
+                  data: rows
+                });
+              }
+            }
+          );
+          // res.status(200).json({
+          //   status: 200,
+          //   error: false,
+          //   message: 'berhasil menambah catatan',
+          //   data: rows
+          // });
         }
       });
     }
@@ -156,10 +270,12 @@ exports.deleteNote = (req, res) => {
         });
       } else {
         res.status(200).json({
-          status: 200,
+          data: {
+            noteId: id
+          },
           error: false,
-          message: `berhasil menghapus catatan ${id}`,
-          data: rows
+          rows: rows,
+          message: 'data deleted successfully!'
         });
       }
     }
